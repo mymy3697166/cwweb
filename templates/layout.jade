@@ -1,0 +1,18 @@
+doctype html
+html(ng-app="siteApp")
+  head
+    title 
+      | 百变壁纸数据管理系统&nbsp;--
+      block title
+    link(href="/static/bootstrap.min.css", rel="stylesheet")
+    link(rel="stylesheet" href="/static/style.css", type="text/css")
+    script(src="/static/underscore-min.js")
+    script(src="/static/jquery.min.js")
+    script(src="/static/bootstrap.min.js")
+    script(src="/static/angular.min.js")
+    script(src="/static/jquery.pagination.js")
+    script(src="/static/script.js")
+  body.container
+    header.row
+    block content
+    footer.row

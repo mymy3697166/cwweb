@@ -1,14 +1,9 @@
 # -*- coding: utf-8 -*-
-
 from gevent import monkey
 monkey.patch_all()
-
 import os
-
 import leancloud
-
 from app import app
-from cloud import engine
 
 APP_ID = os.environ['LEANCLOUD_APP_ID']
 APP_KEY = os.environ['LEANCLOUD_APP_KEY']
@@ -21,7 +16,7 @@ leancloud.use_master_key(False)
 
 # 需要重定向到 HTTPS 可去除下一行的注释。
 # app = leancloud.HttpsRedirectMiddleware(app)
-app = engine.wrap(app)
+app = leancloud.Engine().wrap(app)
 application = app
 
 
