@@ -8,14 +8,24 @@ block content
       li 标签管理
     .btn-group(role="group")
       button.btn.btn-default.btn-sm 新建
+    .btn-group.pull-right(role="group")
+      button.btn.btn-default.btn-sm(ng-click="params.sstatus = 0; fetch()", ng-class="{active: params.sstatus == 0}") 有效
+      button.btn.btn-default.btn-sm(ng-click="params.sstatus = 1; fetch()", ng-class="{active: params.sstatus == 1}") 无效
     table.list.marginTop
       tr
         th 名称
         th 封面
         th 所属标签
         th 创建时间
+        th 编辑
       tr(ng-repeat="item in list")
         td {{item.name}}
         td: img(ng-src="{{item.cover}}")
         td {{item.tag ? item.tag.name : "无"}}
         td {{item.createdAt}}
+        td.text-center(width=100)
+          button.btn.btn-default.btn-xs(ng-click="show_edit(item)") 修改
+          button.btn.btn-default.btn-xs(ng-click="show_edit_status(item)") {{params.sstatus == 0 ? "弃用" : "启用"}}
+      tr(ng-show="list.length == 0")
+        td.nodata(colspan="5") 没有相关数据
+    #pager
