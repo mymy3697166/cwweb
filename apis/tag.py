@@ -1,3 +1,4 @@
+# coding: utf-8
 from flask import Blueprint, render_template, request, jsonify
 import leancloud
 
@@ -18,30 +19,39 @@ def fetch():
   query = Tag.query
   query.equal_to('status', status)
   ls = query.add_descending('createdAt').skip(rows * page).limit(rows).find()
-  print ls
   data = map(lambda item: {
     'id': item.id,
     'name': item.get('name'),
-    'cover': item.get('cover').get_thumbnail_url(width = 128, height = 64),
+    'cover': {'id': item.get('cover').id, 'url': item.get('cover').get_thumbnail_url(width = 128, height = 64), 'origin_url': item.get('cover').url},
     'status': item.get('status'),
+    'description': item.get('description'),
     'tag': {
       'id': item.get('tag').id,
-      'name': item.get('tag').get('name'),
-      'cover': item.get('tag').get('cover').get_thumbnail_url(width = 128, height = 64),
+      'name': item.get('tag').get('name')
     } if item.get('tag') != None else None,
     'createdAt': item.get('createdAt').strftime('%Y-%m-%d %H:%M:%S')
   }, ls)
   return jsonify({'status': 0, 'data': data, 'count': Tag.query.count()})
 
+@tag_apis.route('/fetch_tags', methods = ['POST'])
+def fetch_tags():
+  ls = Tag.query.equal_to('status', 0).find()
+  data = map(lambda item: {
+    'id': item.id,
+    'name': item.get('name')
+  }, ls)
+  return jsonify({'status': 0, 'data': data})
+
 @tag_apis.route('/update', methods = ['POST'])
 def update():
   if request.json.has_key('id'):
-    id = str(request.json['id'])
-    tag = Tag.query.get(id)
+    tag = Tag.query.get(request.json['id'])
   else:
     tag = Tag()
-  if request.json.has_key('status'): tag.set('status', int(request.json['status']))
-  if request.json.has_key('name'): tag.set('name', str(request.json['name']))
-  if request.json.has_key('description'): tag.set('description', str(request.json['description']))
-  if request.json.has_key('name'): tag.set('name', str(request.json['name']))
+  if request.json.has_key('status'): tag.set('status', request.json['status'])
+  if request.json.has_key('name'): tag.set('name', request.json['name'])
+  if request.json.has_key('description'): tag.set('description', request.json['description'])
+  if request.json.has_key('cover'): tag.set('cover', leancloud.File.create_without_data(request.json['cover']['id']))
+  if request.json.has_key('tag') and request.json['tag'] != None: tag.set('tag', Tag.create_without_data(request.json['tag']['id']))
+  tag.save()
   return fetch()

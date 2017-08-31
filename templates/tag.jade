@@ -7,7 +7,7 @@ block content
       li 百变壁纸后台
       li 标签管理
     .btn-group(role="group")
-      button.btn.btn-default.btn-sm 新建
+      button.btn.btn-default.btn-sm(ng-click="show_edit()") 新建
     .btn-group.pull-right(role="group")
       button.btn.btn-default.btn-sm(ng-click="params.sstatus = 0; fetch()", ng-class="{active: params.sstatus == 0}") 有效
       button.btn.btn-default.btn-sm(ng-click="params.sstatus = 1; fetch()", ng-class="{active: params.sstatus == 1}") 无效
@@ -20,7 +20,7 @@ block content
         th 编辑
       tr(ng-repeat="item in list")
         td {{item.name}}
-        td: img(ng-src="{{item.cover}}")
+        td: img(ng-src="{{item.cover.url}}")
         td {{item.tag ? item.tag.name : "无"}}
         td {{item.createdAt}}
         td.text-center(width=100)
@@ -29,3 +29,41 @@ block content
       tr(ng-show="list.length == 0")
         td.nodata(colspan="5") 没有相关数据
     #pager
+    #editor.modal.fade(role="dialog", data-backdrop="static")
+      .modal-dialog(role="document")
+        .modal-content
+          .modal-header
+            button.close(data-dismiss="modal")
+              span &times;
+            h4.modal-title 编辑
+          .modal-body
+            .form-horizontal
+              .form-group
+                label.col-sm-2.control-label 父级：
+                .col-sm-9
+                  .btn-group
+                    button.btn.btn-default.dropdown-toggle(data-toggle="dropdown")
+                      | {{edit_item.tag ? edit_item.tag.name : "无"}}&nbsp;
+                      span.caret
+                    .dropdown-menu
+                      li(ng-click="edit_item.tag = undefined"): a 无
+                      li.divider(role="separator")
+                      li(ng-repeat="item in tags", ng-click="edit_item.tag = item")
+                        a {{item.name}}
+              .form-group
+                label.col-sm-2.control-label 名称：
+                .col-sm-9
+                  input.form-control(ng-model="edit_item.name")
+              .form-group
+                label.col-sm-2.control-label 封面：
+                .col-sm-9
+                  button#btn_upload.btn.btn-default(ng-click="upload()", data-loading-text="上传中...") 上传
+                  br
+                  img.upload_preview(ng-src="{{edit_item.cover.origin_url}}")
+              .form-group
+                label.col-sm-2.control-label 描述：
+                .col-sm-9
+                  textarea.form-control(ng-model="edit_item.description")
+          .modal-footer
+            button.btn.btn-sm.btn-danger(data-dismiss="modal") 取消
+            button.btn.btn-sm.btn-primary(ng-click="update(edit_item)") 确定

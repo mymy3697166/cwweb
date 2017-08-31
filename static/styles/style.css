@@ -1,6 +1,6 @@
 *{font-family:微软雅黑;}
 html{height:100%;}
-body{padding:0px;margin:0px;height:100%;}
+body{padding:0px!important;margin:0px;height:100%;}
 header{height:50px;background:#999;}
 footer{height:50px;background:#999;}
 button, input{outline: none!important;}
@@ -16,3 +16,5 @@ table.list th{background:#f5f5f5;text-align:center;height:40px;border:1px solid 
 table.list td{border:1px solid #ddd;padding:8px;}
 table.list td.nodata{font-size:18px;color:#999;height:50px;text-align:center;}
 table.list td img{width:64px;height:32px;}
+/* 上传图片预览样式 */
+.upload_preview{width:200px;height:100px;margin-top:8px;}
