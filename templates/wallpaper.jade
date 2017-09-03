@@ -1,11 +1,11 @@
 extends layout
 block title
-  | 标签管理
+  | 壁纸管理
 block content
-  #content.row(ng-controller="TagCtrl")
+  #content.row(ng-controller="WallpaperCtrl")
     ol.breadcrumb.marginTop
       li: a(href="/") 首页
-      li 标签管理
+      li 壁纸管理
     .btn-group(role="group")
       button.btn.btn-default.btn-sm(ng-click="show_edit()") 新建
     .btn-group.pull-right(role="group")
@@ -14,14 +14,14 @@ block content
     table.list.marginTop
       tr
         th 名称
-        th 封面
-        th 父级
+        th 图片
+        th 标签
         th 创建时间
         th 编辑
       tr(ng-repeat="item in list")
         td {{item.name}}
-        td: img.cover(ng-src="{{item.cover.url}}")
-        td {{item.tag ? item.tag.name : "无"}}
+        td: img.wallpaper(ng-src="{{item.image.url}}")
+        td: span.label.label-info(ng-repeat="tag in item.tags") {{tag.name}}
         td {{item.createdAt}}
         td.text-center(width=100)
           button.btn.btn-default.btn-xs(ng-click="show_edit(item)") 修改
@@ -39,31 +39,25 @@ block content
           .modal-body
             .form-horizontal
               .form-group
-                label.col-sm-2.control-label 父级：
+                label.col-sm-2.control-label 标签：
                 .col-sm-9
-                  .btn-group
-                    button.btn.btn-default.dropdown-toggle(data-toggle="dropdown")
-                      | {{edit_item.tag ? edit_item.tag.name : "无"}}&nbsp;
-                      span.caret
-                    .dropdown-menu
-                      li(ng-click="edit_item.tag = undefined"): a 无
-                      li.divider(role="separator")
-                      li(ng-repeat="item in tags", ng-click="edit_item.tag = item")
-                        a {{item.name}}
+              .form-group
+                label.col-sm-2.control-label 用户：
+                .col-sm-9
               .form-group
                 label.col-sm-2.control-label 名称：
                 .col-sm-9
                   input.form-control(ng-model="edit_item.name")
               .form-group
-                label.col-sm-2.control-label 封面：
+                label.col-sm-2.control-label 图片：
                 .col-sm-9
                   button#btn_upload.btn.btn-default(ng-click="upload()", data-loading-text="上传中...") 上传
-                  br(ng-show="edit_item.cover")
-                  img.upload_preview(ng-src="{{edit_item.cover.origin_url}}", ng-show="edit_item.cover")
+                  br(ng-show="edit_item.image")
+                  img.upload_preview(ng-src="{{edit_item.image.origin_url}}", ng-show="edit_item.image")
               .form-group
-                label.col-sm-2.control-label 描述：
+                label.col-sm-2.control-label 价格：
                 .col-sm-9
-                  textarea.form-control(ng-model="edit_item.description")
+                  input.form-control(ng-model="edit_item.price", type="number", min="0")
           .modal-footer
             button.btn.btn-sm.btn-danger(data-dismiss="modal") 取消
             button.btn.btn-sm.btn-primary(ng-click="update(edit_item)", ng-disabled="!input_all()") 确定

@@ -43,7 +43,6 @@ def fetch_tags():
 @tag_apis.route('/update', methods = ['POST'])
 def update():
   ps = request.json
-  print ps
   if ps.has_key('id'):
     tag = Tag.query.get(ps['id'])
   else:
