@@ -46,16 +46,17 @@ function upload(callback, start) {
 var siteApp = angular.module("siteApp", []);
 
 siteApp.controller("TagCtrl", ["$scope", "$http", function($scope, $http) {
+  // 定义数据
   $scope.params = {page: 0, rows: 15, sstatus: 0};
   $scope.list = [];
-
+  // 定义函数
   $scope.fetch = function(page) {
     $scope.params.page = page || 0;
     showLoading();
     $http.post('/tag/fetch', $scope.params).then(function(e) {
       hideLoading();
       $scope.list = e.data.data;
-      pager($scope.list, e.data.count, page, $scope.fetch)
+      pager($scope.list, e.data.count, page, $scope.fetch);
     });
   };
   $scope.update = function(data) {
@@ -63,7 +64,8 @@ siteApp.controller("TagCtrl", ["$scope", "$http", function($scope, $http) {
     $http.post('/tag/update', _.extend($scope.params, data)).then(function(e) {
       hideLoading();
       $scope.list = e.data.data;
-      pager($scope.list, e.data.count, $scope.params.page, $scope.fetch)
+      pager($scope.list, e.data.count, $scope.params.page, $scope.fetch);
+      $("#editor").modal("hide");
     });
   };
   $scope.show_edit_status = function(item) {
@@ -84,6 +86,18 @@ siteApp.controller("TagCtrl", ["$scope", "$http", function($scope, $http) {
       });
     }, function() {$("#btn_upload").button("loading");});
   };
+  $scope.input_all = function() {
+    return  $scope.edit_item &&
+      $scope.edit_item.name &&
+      $scope.edit_item.name != "" &&
+      $scope.edit_item.cover &&
+      $scope.edit_item.cover.id &&
+      $scope.edit_item.cover.id != ""
+  };
+  // 初始化
+  $("#editor").on("hidden.bs.modal", function() {
+    $scope.edit_item = {};
+  });
   $http.post("/tag/fetch_tags").then(function(e) {
     $scope.tags = e.data.data;
   });

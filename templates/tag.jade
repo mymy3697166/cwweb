@@ -4,7 +4,7 @@ block title
 block content
   #content.row(ng-controller="TagCtrl")
     ol.breadcrumb.marginTop
-      li 百变壁纸后台
+      li: a(href="/") 首页
       li 标签管理
     .btn-group(role="group")
       button.btn.btn-default.btn-sm(ng-click="show_edit()") 新建
@@ -15,7 +15,7 @@ block content
       tr
         th 名称
         th 封面
-        th 所属标签
+        th 父级
         th 创建时间
         th 编辑
       tr(ng-repeat="item in list")
@@ -58,12 +58,12 @@ block content
                 label.col-sm-2.control-label 封面：
                 .col-sm-9
                   button#btn_upload.btn.btn-default(ng-click="upload()", data-loading-text="上传中...") 上传
-                  br
-                  img.upload_preview(ng-src="{{edit_item.cover.origin_url}}")
+                  br(ng-show="edit_item.cover")
+                  img.upload_preview(ng-src="{{edit_item.cover.origin_url}}", ng-show="edit_item.cover")
               .form-group
                 label.col-sm-2.control-label 描述：
                 .col-sm-9
                   textarea.form-control(ng-model="edit_item.description")
           .modal-footer
             button.btn.btn-sm.btn-danger(data-dismiss="modal") 取消
-            button.btn.btn-sm.btn-primary(ng-click="update(edit_item)") 确定
+            button.btn.btn-sm.btn-primary(ng-click="update(edit_item)", ng-disabled="!input_all()") 确定
