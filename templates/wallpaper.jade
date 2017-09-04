@@ -15,12 +15,14 @@ block content
       tr
         th 名称
         th 图片
+        th 用户
         th 标签
         th 创建时间
         th 编辑
       tr(ng-repeat="item in list")
         td {{item.name}}
         td: img.wallpaper(ng-src="{{item.image.url}}")
+        td {{item.user.nickname}}
         td: span.label.label-info(ng-repeat="tag in item.tags") {{tag.name}}
         td {{item.createdAt}}
         td.text-center(width=100)
@@ -41,9 +43,20 @@ block content
               .form-group
                 label.col-sm-2.control-label 标签：
                 .col-sm-9
+                  .checkbox.pull-left.paddingRight(ng-repeat="tag in tags")
+                    label
+                      input(type="checkbox", ng-model="tag.checked", ng-change="tag_checked()")
+                      | {{tag.name}}
               .form-group
                 label.col-sm-2.control-label 用户：
                 .col-sm-9
+                  .dropdown
+                    button.btn.btn-default.dropdown-toggle(data-toggle="dropdown")
+                      | {{edit_item.user ? edit_item.user.nickname : "请选择"}}&nbsp;
+                      span.caret
+                    ul.dropdown-menu
+                      li(ng-repeat="user in users", ng-click="edit_item.user = user")
+                        a(href="javascript:void(0)") {{user.nickname}}
               .form-group
                 label.col-sm-2.control-label 名称：
                 .col-sm-9

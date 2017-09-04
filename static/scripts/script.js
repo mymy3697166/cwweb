@@ -141,7 +141,7 @@ siteApp.controller("WallpaperCtrl", ["$scope", "$http", function($scope, $http) 
     upload(function(e) {
       $scope.$apply(function() {
         $("#btn_upload").button("reset");
-        $scope.edit_item.cover = {id: e.id, origin_url: e.url};
+        $scope.edit_item.image = {id: e.id, origin_url: e.url};
       });
     }, function() {$("#btn_upload").button("loading");});
   };
@@ -149,9 +149,21 @@ siteApp.controller("WallpaperCtrl", ["$scope", "$http", function($scope, $http) 
     return  $scope.edit_item &&
       $scope.edit_item.name &&
       $scope.edit_item.name != "" &&
-      $scope.edit_item.cover &&
-      $scope.edit_item.cover.id &&
-      $scope.edit_item.cover.id != ""
+      $scope.edit_item.image &&
+      $scope.edit_item.image.id &&
+      $scope.edit_item.image.id != "" &&
+      $scope.edit_item.tags &&
+      $scope.edit_item.tags.length > 0 &&
+      $scope.edit_item.user &&
+      $scope.edit_item.user.id &&
+      $scope.edit_item.user.id != "" &&
+      $scope.edit_item.price &&
+      $scope.edit_item.price != ""
+  };
+  $scope.tag_checked = function() {
+    $scope.edit_item.tags = _.filter($scope.tags, function(item) {
+      return item.checked;
+    }).map(function(item) {return item.id;});
   };
   // 初始化
   $("#editor").on("hidden.bs.modal", function() {
@@ -160,5 +172,8 @@ siteApp.controller("WallpaperCtrl", ["$scope", "$http", function($scope, $http) 
   $http.post("/tag/fetch_tags").then(function(e) {
     $scope.tags = e.data.data;
   });
-  //$scope.fetch();
+  $http.post("/user/fetch_default").then(function(e) {
+    $scope.users = e.data.data;
+  });
+  $scope.fetch();
 }]);

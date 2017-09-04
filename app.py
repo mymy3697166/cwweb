@@ -6,15 +6,17 @@ from flask import Flask
 from flask import render_template, request
 from apis.tag import tag_apis
 from apis.wallpaper import wallpaper_apis
+from apis.user import user_apis
 
 app = Flask(__name__)
 app.jinja_env.variable_start_string = '[['
 app.jinja_env.variable_end_string = ']]'
 app.jinja_env.add_extension('pyjade.ext.jinja.PyJadeExtension')
 
-# 标签 apis
+# 注册路由
 app.register_blueprint(tag_apis, url_prefix = '/tag')
 app.register_blueprint(wallpaper_apis, url_prefix = '/wallpaper')
+app.register_blueprint(user_apis, url_prefix = '/user')
 
 @app.route('/')
 def index():
