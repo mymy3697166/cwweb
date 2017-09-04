@@ -25,7 +25,7 @@ def fetch():
     'user': {'id': item.get('user').id, 'nickname': item.get('user').get('nickname')},
     'tags': map(lambda wpt: {'id': wpt.get('tag').id, 'name': wpt.get('tag').get('name')}, WallpaperTags.query.include('tag').equal_to('wallpaper', item).find()),
     'name': item.get('name'),
-    'image': {'id': item.get('image').id, 'url': item.get('image').get_thumbnail_url(width = 64, height = 128), 'origin_url': item.get('image').url},
+    'image': {'id': item.get('image').id, 'url': item.get('image').get_thumbnail_url(width = 90, height = 160, scale_to_fit = False), 'origin_url': item.get('image').url},
     'status': item.get('status'),
     'price': item.get('price'),
     'createdAt': item.get('createdAt').strftime('%Y-%m-%d %H:%M:%S')

@@ -1,5 +1,5 @@
 $(function() {
-  $("#content").css("min-height", $("body").height() - 100);
+  $("#content").css("min-height", $("body").height() - 137);
 });
 
 function showLoading() {
@@ -18,7 +18,7 @@ function pager(list, total, page, fetch) {
     prev_text: "上一页",
     next_text: "下一页",
     callback: fetch,
-    items_per_page: 15,
+    items_per_page: 10,
     current_page: page,
     link_to: "javascript:void(0)"
   });
@@ -47,7 +47,7 @@ var siteApp = angular.module("siteApp", []);
 
 siteApp.controller("TagCtrl", ["$scope", "$http", function($scope, $http) {
   // 定义数据
-  $scope.params = {page: 0, rows: 15, sstatus: 0};
+  $scope.params = {page: 0, rows: 10, sstatus: 0};
   $scope.list = [];
   // 定义函数
   $scope.fetch = function(page) {
@@ -61,7 +61,7 @@ siteApp.controller("TagCtrl", ["$scope", "$http", function($scope, $http) {
   };
   $scope.update = function(data) {
     showLoading();
-    $http.post('/tag/update', _.extend($scope.params, data)).then(function(e) {
+    $http.post('/tag/update', _.extend(data, $scope.params)).then(function(e) {
       hideLoading();
       $scope.list = e.data.data;
       pager($scope.list, e.data.count, $scope.params.page, $scope.fetch);
@@ -106,7 +106,7 @@ siteApp.controller("TagCtrl", ["$scope", "$http", function($scope, $http) {
 
 siteApp.controller("WallpaperCtrl", ["$scope", "$http", function($scope, $http) {
   // 定义数据
-  $scope.params = {page: 0, rows: 15, sstatus: 0};
+  $scope.params = {page: 0, rows: 10, sstatus: 0};
   $scope.list = [];
   // 定义函数
   $scope.fetch = function(page) {
@@ -120,7 +120,7 @@ siteApp.controller("WallpaperCtrl", ["$scope", "$http", function($scope, $http) 
   };
   $scope.update = function(data) {
     showLoading();
-    $http.post('/wallpaper/update', _.extend($scope.params, data)).then(function(e) {
+    $http.post('/wallpaper/update', _.extend(data, $scope.params)).then(function(e) {
       hideLoading();
       $scope.list = e.data.data;
       pager($scope.list, e.data.count, $scope.params.page, $scope.fetch);

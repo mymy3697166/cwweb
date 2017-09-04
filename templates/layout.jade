@@ -14,5 +14,11 @@ html(ng-app="siteApp")
     script(src="/static/scripts/script.js")
   body.container
     header.row
+      nav.navbar.navbar-default
+        ul.nav.navbar-nav
+          li(ng-class="{active: #{page} == 0}"): a(href="/") 首页
+          li(ng-class="{active: #{page} == 1}"): a(href="/tag") 标签
+          li(ng-class="{active: #{page} == 2}"): a(href="/wallpaper") 壁纸
+          li(ng-class="{active: #{page} == 3}"): a(href="/theme") 主题
     block content
     footer.row

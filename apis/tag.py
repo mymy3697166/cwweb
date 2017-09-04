@@ -23,7 +23,7 @@ def fetch():
   data = map(lambda item: {
     'id': item.id,
     'name': item.get('name'),
-    'cover': {'id': item.get('cover').id, 'url': item.get('cover').get_thumbnail_url(width = 128, height = 64), 'origin_url': item.get('cover').url},
+    'cover': {'id': item.get('cover').id, 'url': item.get('cover').get_thumbnail_url(width = 160, height = 80, scale_to_fit = False), 'origin_url': item.get('cover').url},
     'status': item.get('status'),
     'description': item.get('description'),
     'tag': {'id': item.get('tag').id, 'name': item.get('tag').get('name')} if item.get('tag') != None else None,
@@ -33,7 +33,7 @@ def fetch():
 
 @tag_apis.route('/fetch_tags', methods = ['POST'])
 def fetch_tags():
-  ls = Tag.query.equal_to('status', 0).find()
+  ls = Tag.query.equal_to('status', 0).equal_to('tag', None).find()
   data = map(lambda item: {
     'id': item.id,
     'name': item.get('name')

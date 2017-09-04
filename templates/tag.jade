@@ -1,9 +1,10 @@
 extends layout
+- var page = 1
 block title
   | 标签管理
 block content
   #content.row(ng-controller="TagCtrl")
-    ol.breadcrumb.marginTop
+    ol.breadcrumb
       li: a(href="/") 首页
       li 标签管理
     .btn-group(role="group")
