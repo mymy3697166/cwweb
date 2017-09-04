@@ -134,7 +134,13 @@ siteApp.controller("WallpaperCtrl", ["$scope", "$http", function($scope, $http) 
   };
   $scope.show_edit = function(item) {
     $scope.edit_item = {};
-    if (item) $scope.edit_item = {id: item.id, name: item.name, image: item.image, price: item.price, tags: item.tags};
+    if (item) {
+      $scope.tags.forEach(function(atag) {
+        if (_.findIndex(item.tags, function(tag) {return atag.id == tag.id;}) >= 0)
+          atag.checked = true;
+      });
+      $scope.edit_item = {id: item.id, name: item.name, image: item.image, price: item.price, tags: item.tags, user: item.user};
+    }
     $("#editor").modal("show");
   };
   $scope.upload = function() {
@@ -161,9 +167,7 @@ siteApp.controller("WallpaperCtrl", ["$scope", "$http", function($scope, $http) 
       $scope.edit_item.price != ""
   };
   $scope.tag_checked = function() {
-    $scope.edit_item.tags = _.filter($scope.tags, function(item) {
-      return item.checked;
-    }).map(function(item) {return item.id;});
+    $scope.edit_item.tags = _.filter($scope.tags, function(item) {return item.checked;});
   };
   // 初始化
   $("#editor").on("hidden.bs.modal", function() {

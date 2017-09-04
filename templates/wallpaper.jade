@@ -29,7 +29,7 @@ block content
           button.btn.btn-default.btn-xs(ng-click="show_edit(item)") 修改
           button.btn.btn-default.btn-xs(ng-click="show_edit_status(item)") {{params.sstatus == 0 ? "弃用" : "启用"}}
       tr(ng-show="list.length == 0")
-        td.nodata(colspan="5") 没有相关数据
+        td.nodata(colspan="6") 没有相关数据
     #pager
     #editor.modal.fade(role="dialog", data-backdrop="static")
       .modal-dialog(role="document")

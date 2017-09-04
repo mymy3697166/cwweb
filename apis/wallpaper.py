@@ -61,6 +61,6 @@ def update():
     for tag in ps['tags']:
       wpt = WallpaperTags()
       wpt.set('wallpaper', wp)
-      wpt.set('tag', Tag.create_without_data(tag))
+      wpt.set('tag', Tag.create_without_data(tag['id']))
       wpt.save()
   return fetch()
