@@ -12,8 +12,8 @@ function hideLoading() {
   $(".loading").remove();
 }
 
-function pager(list, total, page, fetch) {
-  $("#pager").pagination(total, {
+function pager(list, total, page, fetch, element) {
+  (element || $("#pager")).pagination(total, {
     num_display_entries: 8,
     prev_text: "上一页",
     next_text: "下一页",
@@ -185,6 +185,7 @@ siteApp.controller("WallpaperCtrl", ["$scope", "$http", function($scope, $http) 
 siteApp.controller("ThemeCtrl", ["$scope", "$http", function($scope, $http) {
   // 定义数据
   $scope.params = {page: 0, rows: 10, sstatus: 0};
+  $scope.wps_params = {page: 0, rows: 10};
   $scope.list = [];
   // 定义函数
   $scope.fetch = function(page) {
@@ -194,6 +195,16 @@ siteApp.controller("ThemeCtrl", ["$scope", "$http", function($scope, $http) {
       hideLoading();
       $scope.list = e.data.data;
       pager($scope.list, e.data.count, page, $scope.fetch);
+    });
+  };
+  $scope.fetch_wps = function(page) {
+    $scope.wps_params.page = page || 0;
+    $scope.wps_params.id = $scope.edit_item.id;
+    showLoading();
+    $http.post('/theme/fetch_wps', $scope.wps_params).then(function(e) {
+      hideLoading();
+      $scope.wps = e.data.data;
+      pager($scope.wps, e.data.count, $scope.wps_params.page, $scope.fetch_wps, $("#wps-pager"));
     });
   };
   $scope.update = function(data) {
@@ -214,6 +225,33 @@ siteApp.controller("ThemeCtrl", ["$scope", "$http", function($scope, $http) {
     $scope.edit_item = {};
     if (item) $scope.edit_item = {id: item.id, name: item.name, cover: item.cover, description: item.description, user: item.user};
     $("#editor").modal("show");
+  };
+  $scope.show_wps = function(item) {
+    $scope.edit_item = item;
+    $scope.fetch_wps();
+    $("#wps").modal("show");
+  };
+  $scope.remove_wp = function(item) {
+    if (confirm("确定要移除该壁纸吗？")) {
+      showLoading();
+      $http.post('/theme/remove_wp', _.extend({twp_id: item.id}, $scope.wps_params)).then(function(e) {
+        hideLoading();
+        $scope.wps = e.data.data;
+        pager($scope.wps, e.data.count, $scope.wps_params.page, $scope.fetch_wps, $("#wps-pager"));
+      });
+    }
+  };
+  $scope.add_wp = function(wp) {
+    showLoading();
+    $http.post('/theme/add_wp', _.extend({theme: $scope.edit_item.id, wallpaper: wp}, $scope.wps_params)).then(function(e) {
+      hideLoading();
+      if (e.data.status == 1) {
+        alert(e.data.description);
+        return;
+      }
+      $scope.wps = e.data.data;
+      pager($scope.wps, e.data.count, $scope.wps_params.page, $scope.fetch_wps, $("#wps-pager"));
+    });
   };
   $scope.upload = function() {
     upload(function(e) {

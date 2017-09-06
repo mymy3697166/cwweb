@@ -24,12 +24,48 @@ block content
         td: img.cover(ng-src="{{item.cover.url}}")
         td {{item.user.nickname}}
         td {{item.createdAt}}
-        td.text-center(width=100)
+        td.text-center(width=150)
+          button.btn.btn-default.btn-xs(ng-click="show_wps(item)") 壁纸
           button.btn.btn-default.btn-xs(ng-click="show_edit(item)") 修改
           button.btn.btn-default.btn-xs(ng-click="show_edit_status(item)") {{params.sstatus == 0 ? "弃用" : "启用"}}
       tr(ng-show="list.length == 0")
         td.nodata(colspan="5") 没有相关数据
     #pager
+    #wps.modal.fade(role="dialog", data-backdrop="static")
+      .modal-dialog.modal-lg(role="document")
+        .modal-content
+          .modal-header
+            button.close(data-dismiss="modal")
+              span &times;
+            h4.modal-title 编辑
+          .modal-body.clearfix
+            .col-xs-4
+              .input-group
+                input.form-control
+                .input-group-btn
+                  button.btn.btn-default 搜索
+              .list-group
+                .list-group-item(ng-repeat="item in swps", ng-click="add_wp(item.id)")
+                  img.swps(ng-src="item.image")
+                  label {{item.name}}
+            .col-xs-8
+              table.list
+                tr
+                  th 名称
+                  th 封面
+                  th 创建时间
+                  th(width=80) 编辑
+                tr(ng-repeat="item in wps")
+                  td {{item.name}}
+                  td: img.wallpaper(ng-src="{{item.image}}")
+                  td {{item.createdAt}}
+                  td.text-center
+                    button.btn.btn-default.btn-xs(ng-click="remove_wp(item)") 移除
+                tr(ng-show="wps.length == 0")
+                  td.nodata(colspan="4") 没有相关数据
+              #wps-pager
+          .modal-footer
+            button.btn.btn-sm.btn-danger(data-dismiss="modal") 取消
     #editor.modal.fade(role="dialog", data-backdrop="static")
       .modal-dialog(role="document")
         .modal-content
