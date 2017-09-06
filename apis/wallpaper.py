@@ -30,7 +30,7 @@ def fetch():
     'price': item.get('price'),
     'createdAt': item.get('createdAt').strftime('%Y-%m-%d %H:%M:%S')
   }, ls)
-  return jsonify({'status': 0, 'data': data, 'count': Wallpaper.query.count()})
+  return jsonify({'status': 0, 'data': data, 'count': Wallpaper.query.equal_to('status', status).count()})
 
 @wallpaper_apis.route('/update', methods = ['POST'])
 def update():
@@ -49,7 +49,6 @@ def update():
   if ps.has_key('image'):
     img = leancloud.File.create_without_data(ps['image']['id'])
     img.fetch()
-    print img.metadata
     wp.set('image', img)
     wp.set('width', img.metadata['width'])
     wp.set('height', img.metadata['height'])

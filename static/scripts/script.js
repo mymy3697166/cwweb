@@ -181,3 +181,65 @@ siteApp.controller("WallpaperCtrl", ["$scope", "$http", function($scope, $http) 
   });
   $scope.fetch();
 }]);
+
+siteApp.controller("ThemeCtrl", ["$scope", "$http", function($scope, $http) {
+  // 定义数据
+  $scope.params = {page: 0, rows: 10, sstatus: 0};
+  $scope.list = [];
+  // 定义函数
+  $scope.fetch = function(page) {
+    $scope.params.page = page || 0;
+    showLoading();
+    $http.post('/theme/fetch', $scope.params).then(function(e) {
+      hideLoading();
+      $scope.list = e.data.data;
+      pager($scope.list, e.data.count, page, $scope.fetch);
+    });
+  };
+  $scope.update = function(data) {
+    showLoading();
+    $http.post('/theme/update', _.extend(data, $scope.params)).then(function(e) {
+      hideLoading();
+      $scope.list = e.data.data;
+      pager($scope.list, e.data.count, $scope.params.page, $scope.fetch);
+      $("#editor").modal("hide");
+    });
+  };
+  $scope.show_edit_status = function(item) {
+    if (confirm("确定要" + (item.status == 0 ? "弃用" : "启用") + "该记录吗？")) {
+      $scope.update({id: item.id, status: item.status == 0 ? 1 : 0});
+    }
+  };
+  $scope.show_edit = function(item) {
+    $scope.edit_item = {};
+    if (item) $scope.edit_item = {id: item.id, name: item.name, cover: item.cover, description: item.description, user: item.user};
+    $("#editor").modal("show");
+  };
+  $scope.upload = function() {
+    upload(function(e) {
+      $scope.$apply(function() {
+        $("#btn_upload").button("reset");
+        $scope.edit_item.cover = {id: e.id, origin_url: e.url};
+      });
+    }, function() {$("#btn_upload").button("loading");});
+  };
+  $scope.input_all = function() {
+    return  $scope.edit_item &&
+      $scope.edit_item.user &&
+      $scope.edit_item.user.id &&
+      $scope.edit_item.user.id != "" &&
+      $scope.edit_item.name &&
+      $scope.edit_item.name != "" &&
+      $scope.edit_item.cover &&
+      $scope.edit_item.cover.id &&
+      $scope.edit_item.cover.id != ""
+  };
+  // 初始化
+  $("#editor").on("hidden.bs.modal", function() {
+    $scope.edit_item = {};
+  });
+  $http.post("/user/fetch_default").then(function(e) {
+    $scope.users = e.data.data;
+  });
+  $scope.fetch();
+}]);

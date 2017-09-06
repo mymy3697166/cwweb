@@ -16,10 +16,7 @@ def fetch():
   page = int(request.json['page'])
   status = int(request.json['sstatus'])
 
-  query = Tag.query
-  query.equal_to('status', status)
-  query.include('tag.name')
-  ls = query.add_descending('createdAt').skip(rows * page).limit(rows).find()
+  ls = Tag.query.include('tag.name').equal_to('status', status).add_descending('createdAt').skip(rows * page).limit(rows).find()
   data = map(lambda item: {
     'id': item.id,
     'name': item.get('name'),
@@ -29,7 +26,7 @@ def fetch():
     'tag': {'id': item.get('tag').id, 'name': item.get('tag').get('name')} if item.get('tag') != None else None,
     'createdAt': item.get('createdAt').strftime('%Y-%m-%d %H:%M:%S')
   }, ls)
-  return jsonify({'status': 0, 'data': data, 'count': Tag.query.count()})
+  return jsonify({'status': 0, 'data': data, 'count': Tag.query.equal_to('status', status).count()})
 
 @tag_apis.route('/fetch_tags', methods = ['POST'])
 def fetch_tags():

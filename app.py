@@ -7,6 +7,7 @@ from flask import render_template, request
 from apis.tag import tag_apis
 from apis.wallpaper import wallpaper_apis
 from apis.user import user_apis
+from apis.theme import theme_apis
 
 app = Flask(__name__)
 app.jinja_env.variable_start_string = '[['
@@ -17,6 +18,7 @@ app.jinja_env.add_extension('pyjade.ext.jinja.PyJadeExtension')
 app.register_blueprint(tag_apis, url_prefix = '/tag')
 app.register_blueprint(wallpaper_apis, url_prefix = '/wallpaper')
 app.register_blueprint(user_apis, url_prefix = '/user')
+app.register_blueprint(theme_apis, url_prefix = '/theme')
 
 @app.route('/')
 def index():
