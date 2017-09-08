@@ -36,3 +36,7 @@ def upload():
   file.save()
   io.close()
   return '{"status": 0, "url": "%s", "id": "%s"}'%(file.url, file.id)
+
+@app.route('/login')
+def login():
+  return render_template('login.jade')

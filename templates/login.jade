@@ -1,0 +1,25 @@
+doctype html
+html(ng-app="siteApp")
+  head
+    title 百变壁纸数据管理系统 -- 登录
+    link(rel="stylesheet", href="/static/styles/bootstrap.min.css", type="text/css")
+    link(rel="stylesheet", href="/static/styles/style.css", type="text/css")
+    script(src="/static/scripts/underscore-min.js")
+    script(src="/static/scripts/jquery.min.js")
+    script(src="/static/scripts/bootstrap.min.js")
+    script(src="/static/scripts/angular.min.js")
+    script(src="/static/scripts/script.js")
+  body.login(ng-controller="LoginCtrl")
+    .panel.panel-default.panel-size
+      .panel-heading 管理员登录
+      .panel-body
+        .form-horizontal
+          .form-group
+            label.col-sm-3.control-label 账号：
+            .col-sm-8
+              input.form-control(ng-model="uid")
+          .form-group
+            label.col-sm-3.control-label 密码：
+            .col-sm-8
+              input.form-control(ng-model="uid", type="password")
+    

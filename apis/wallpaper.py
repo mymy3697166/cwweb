@@ -53,13 +53,18 @@ def update():
     wp.set('width', img.metadata['width'])
     wp.set('height', img.metadata['height'])
     wp.set('size', img.metadata['size'])
-  wp.save()
   if not apis.isNone(ps, 'tags'):
     ls = WallpaperTags.query.equal_to('wallpaper', wp).find()
     leancloud.Object.destroy_all(ls)
+    tags = ''
     for tag in ps['tags']:
+      t = Tag.create_without_data(tag['id'])
+      t.fetch()
+      tags += t.get('name') if tags == '' else ',' + t.get('name')
       wpt = WallpaperTags()
       wpt.set('wallpaper', wp)
-      wpt.set('tag', Tag.create_without_data(tag['id']))
+      wpt.set('tag', t)
       wpt.save()
+    wp.set('tags', tags)
+  wp.save()
   return fetch()

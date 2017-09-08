@@ -186,7 +186,9 @@ siteApp.controller("ThemeCtrl", ["$scope", "$http", function($scope, $http) {
   // 定义数据
   $scope.params = {page: 0, rows: 10, sstatus: 0};
   $scope.wps_params = {page: 0, rows: 10};
+  $scope.search_params = {key: "", page: 0, rows: 10};
   $scope.list = [];
+  $scope.swps = [];
   // 定义函数
   $scope.fetch = function(page) {
     $scope.params.page = page || 0;
@@ -205,6 +207,17 @@ siteApp.controller("ThemeCtrl", ["$scope", "$http", function($scope, $http) {
       hideLoading();
       $scope.wps = e.data.data;
       pager($scope.wps, e.data.count, $scope.wps_params.page, $scope.fetch_wps, $("#wps-pager"));
+    });
+  };
+  $scope.search_wps = function(next) {
+    if (next == undefined) $scope.search_params.page = 0;
+    if (next == true) $scope.search_params.page++;
+    if (next == false) $scope.search_params.page--;
+    showLoading();
+    $http.post('/theme/search_wps', $scope.search_params).then(function(e) {
+      hideLoading();
+      $scope.swps_page_count = Math.ceil(e.data.count / $scope.search_params.rows) - 1;
+      $scope.swps = e.data.data;
     });
   };
   $scope.update = function(data) {
@@ -230,6 +243,7 @@ siteApp.controller("ThemeCtrl", ["$scope", "$http", function($scope, $http) {
     $scope.edit_item = item;
     $scope.fetch_wps();
     $("#wps").modal("show");
+    $scope.search_wps();
   };
   $scope.remove_wp = function(item) {
     if (confirm("确定要移除该壁纸吗？")) {
@@ -246,7 +260,7 @@ siteApp.controller("ThemeCtrl", ["$scope", "$http", function($scope, $http) {
     $http.post('/theme/add_wp', _.extend({theme: $scope.edit_item.id, wallpaper: wp}, $scope.wps_params)).then(function(e) {
       hideLoading();
       if (e.data.status == 1) {
-        alert(e.data.description);
+        alert("已加入该主题");
         return;
       }
       $scope.wps = e.data.data;

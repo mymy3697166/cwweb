@@ -24,7 +24,7 @@ block content
         td {{item.name}}
         td: img.wallpaper(ng-src="{{item.image.url}}")
         td {{item.user.nickname}}
-        td: span.label.label-info(ng-repeat="tag in item.tags") {{tag.name}}
+        td: span.label.tagMarginRight(ng-repeat="tag in item.tags", ng-class="{'label-info': $index % 5 == 0, 'label-primary': $index % 5 == 1, 'label-success': $index % 5 == 2, 'label-warning': $index % 5 == 3, 'label-danger': $index % 5 == 4}") {{tag.name}}&nbsp;
         td {{item.createdAt}}
         td.text-center(width=100)
           button.btn.btn-default.btn-xs(ng-click="show_edit(item)") 修改

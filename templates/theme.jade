@@ -41,13 +41,17 @@ block content
           .modal-body.clearfix
             .col-xs-4
               .input-group
-                input.form-control
+                input.form-control(ng-model="search_params.key")
                 .input-group-btn
-                  button.btn.btn-default 搜索
-              .list-group
-                .list-group-item(ng-repeat="item in swps", ng-click="add_wp(item.id)")
-                  img.swps(ng-src="item.image")
-                  label {{item.name}}
+                  button.btn.btn-default(ng-click="search_wps()") 搜索
+              .list-group.marginTop
+                .list-group-item.search_item(ng-repeat="item in swps", ng-click="add_wp(item.id)")
+                  img.swps(ng-src="{{item.image}}")
+                  span &nbsp;{{item.name}}
+                .list-group-item.nodata(ng-show="swps.length == 0") 没有相关数据
+              .btn-group(role="group")
+                button.btn.btn-default.btn-sm(ng-click="search_wps(false)", ng-disabled="search_params.page == 0 || search_params.key == ''") 上一页
+                button.btn.btn-default.btn-sm(ng-click="search_wps(true)", ng-disabled="search_params.page >= swps_page_count || search_params.key == ''") 下一页
             .col-xs-8
               table.list
                 tr

@@ -59,7 +59,7 @@ def fetch_wps():
   data = map(lambda item: {
     'id': item.id,
     'name': item.get('wallpaper').get('name'),
-    'image': item.get('wallpaper').get('cover').get_thumbnail_url(width = 90, height = 160, scale_to_fit = False),
+    'image': item.get('wallpaper').get('image').get_thumbnail_url(width = 90, height = 160, scale_to_fit = False),
     'createdAt': item.get('createdAt').strftime('%Y-%m-%d %H:%M:%S')
   }, ls)
   return jsonify({'status': 0, 'data': data, 'count': ThemeWallpapers.query.equal_to('theme', theme).count()})
@@ -69,17 +69,20 @@ def search_wps():
   rows = int(request.json['rows'])
   page = int(request.json['page'])
   key = request.json['key'] if request.json.has_key('key') else ''
-
   if key == '':
-    ls = ThemeWallpapers.query.equal_to('status', 0).add_descending('createdAt').limit(20).find()
+    ls = Wallpaper.query.equal_to('status', 0).add_descending('createdAt').limit(20).find()
+    count = rows
   else:
-    ls = leancloud.Query.do_cloud_query("select id, name, image from Wallpaper where name like '%?%' or id in (select wallpaper from WallpaperTags where tag in(select id from Tag where name like '%?%'))", key, key).results
+    nq = Wallpaper.query.equal_to('status', 0)
+    tq = Wallpaper.query.equal_to('status', 0)
+    count = leancloud.Query.or_(nq.contains('name', key), tq.contains('tags', key)).count()
+    ls = leancloud.Query.or_(nq.contains('name', key), tq.contains('tags', key)).skip(rows * page).limit(rows).find()
   data = map(lambda item: {
     'id': item.id,
-    'name': item.get('wallpaper').get('name'),
-    'image': item.get('wallpaper').get('cover').get_thumbnail_url(width = 90, height = 160, scale_to_fit = False)
+    'name': item.get('name'),
+    'image': item.get('image').get_thumbnail_url(width = 90, height = 160, scale_to_fit = False)
   }, ls)
-  return jsonify({'status': 0, 'data': data, 'count': ThemeWallpapers.query.equal_to('theme', theme).count()})
+  return jsonify({'status': 0, 'data': data, 'count': count})
 
 @theme_apis.route('/remove_wp', methods = ['POST'])
 def remove_wp():
@@ -91,11 +94,11 @@ def remove_wp():
 def add_wp():
   theme = Theme.query.get(request.json['theme'])
   wallpaper = Wallpaper.query.get(request.json['wallpaper'])
-  count = ThemeWallpapers.query.equal_to('theme', theme).equal_to('wallpaper', wallpaper).find().count()
+  count = ThemeWallpapers.query.equal_to('theme', theme).equal_to('wallpaper', wallpaper).count()
   if count == 0:
     twp = ThemeWallpapers()
-    twp.theme = theme
-    twp.wallpaper = wallpaper
+    twp.set('theme', theme)
+    twp.set('wallpaper', wallpaper)
     twp.save()
   else:
     return jsonify({'status': 1})
