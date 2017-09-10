@@ -44,10 +44,17 @@ block content
               .form-group
                 label.col-sm-2.control-label 标签：
                 .col-sm-9
-                  .checkbox.pull-left.paddingRight(ng-repeat="tag in tags")
+                  .checkbox.pull-left.paddingRight.dropdown(ng-repeat="tag in tag_filter(null)")
                     label
                       input(type="checkbox", ng-model="tag.checked", ng-change="tag_checked()")
-                      | {{tag.name}}
+                      | {{tag.name}}&nbsp;&nbsp;
+                    a(href="javascript:void(0)", ng-click="toggle_tags($event, $index)"): i.fa.fa-plus-square-o
+                    ul.tag-children.dropdown-menu
+                      li.dropdown-header {{tag.name}}的下级标签
+                      li.paddingLeft(ng-repeat="ctag in tag_filter(tag.id)")
+                        label
+                          input(type="checkbox", ng-model="ctag.checked", ng-change="tag_checked()")
+                          | {{ctag.name}}&nbsp;&nbsp;
               .form-group
                 label.col-sm-2.control-label 用户：
                 .col-sm-9

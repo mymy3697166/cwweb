@@ -1,5 +1,5 @@
 # coding: utf-8
-from flask import Blueprint, render_template, request, jsonify
+from flask import Blueprint, render_template, request, jsonify, redirect, session
 import leancloud, apis
 from apis.tag import Tag
 
@@ -11,6 +11,8 @@ wallpaper_apis = Blueprint('wallpaper_apis', __name__)
 
 @wallpaper_apis.route('/')
 def wallpaper():
+  if not session.has_key('user') or session.has_key('user') == None:
+    return redirect('/login')
   return render_template('wallpaper.jade')
 
 @wallpaper_apis.route('/fetch', methods = ['POST'])
@@ -31,6 +33,16 @@ def fetch():
     'createdAt': item.get('createdAt').strftime('%Y-%m-%d %H:%M:%S')
   }, ls)
   return jsonify({'status': 0, 'data': data, 'count': Wallpaper.query.equal_to('status', status).count()})
+
+@wallpaper_apis.route('/fetch_tags', methods = ['POST'])
+def fetch_tags():
+  ls = Tag.query.equal_to('status', 0).find()
+  data = map(lambda item: {
+    'id': item.id,
+    'name': item.get('name'),
+    'tag': item.get('tag').id if item.get('tag') else None
+  }, ls)
+  return jsonify({'status': 0, 'data': data})
 
 @wallpaper_apis.route('/update', methods = ['POST'])
 def update():

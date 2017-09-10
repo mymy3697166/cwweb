@@ -6,6 +6,7 @@ html(ng-app="siteApp")
       block title
     link(rel="stylesheet", href="/static/styles/bootstrap.min.css", type="text/css")
     link(rel="stylesheet", href="/static/styles/style.css", type="text/css")
+    link(rel="stylesheet", href="/static/styles/font-awesome.min.css", type="text/css")
     script(src="/static/scripts/underscore-min.js")
     script(src="/static/scripts/jquery.min.js")
     script(src="/static/scripts/bootstrap.min.js")
@@ -13,12 +14,14 @@ html(ng-app="siteApp")
     script(src="/static/scripts/jquery.pagination.js")
     script(src="/static/scripts/script.js")
   body.container
-    header.row
+    header.row(ng-controller="LogoutCtrl")
       nav.navbar.navbar-default
         ul.nav.navbar-nav
           li(ng-class="{active: #{page} == 0}"): a(href="/") 首页
           li(ng-class="{active: #{page} == 1}"): a(href="/tag") 标签
           li(ng-class="{active: #{page} == 2}"): a(href="/wallpaper") 壁纸
           li(ng-class="{active: #{page} == 3}"): a(href="/theme") 主题
+        ui.nav.navbar-nav.navbar-right.paddingRight
+          li: a(href="javascript:void(0)" ng-click="logout()") 退出
     block content
     footer.row

@@ -1,5 +1,5 @@
 # coding: utf-8
-from flask import Blueprint, render_template, request, jsonify
+from flask import Blueprint, render_template, request, jsonify, redirect, session, session
 import leancloud, apis
 from apis.wallpaper import Wallpaper
 from apis.tag import Tag
@@ -12,6 +12,8 @@ theme_apis = Blueprint('theme_apis', __name__)
 
 @theme_apis.route('/')
 def theme():
+  if not session.has_key('user') or session.has_key('user') == None:
+    return redirect('/login')
   return render_template('theme.jade')
 
 @theme_apis.route('/fetch', methods = ['POST'])

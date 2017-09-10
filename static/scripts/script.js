@@ -45,6 +45,7 @@ function upload(callback, start) {
 
 var siteApp = angular.module("siteApp", []);
 
+
 siteApp.controller("TagCtrl", ["$scope", "$http", function($scope, $http) {
   // 定义数据
   $scope.params = {page: 0, rows: 10, sstatus: 0};
@@ -134,6 +135,9 @@ siteApp.controller("WallpaperCtrl", ["$scope", "$http", function($scope, $http) 
   };
   $scope.show_edit = function(item) {
     $scope.edit_item = {};
+    $scope.tags.forEach(function(tag) {
+      delete tag.checked;
+    });
     if (item) {
       $scope.tags.forEach(function(atag) {
         if (_.findIndex(item.tags, function(tag) {return atag.id == tag.id;}) >= 0)
@@ -167,13 +171,25 @@ siteApp.controller("WallpaperCtrl", ["$scope", "$http", function($scope, $http) 
       $scope.edit_item.price != ""
   };
   $scope.tag_checked = function() {
+
     $scope.edit_item.tags = _.filter($scope.tags, function(item) {return item.checked;});
+  };
+  $scope.tag_filter = function(tag) {
+    return _.filter($scope.tags, function(item) {
+      return tag == item.tag;
+    });
+  };
+  $scope.toggle_tags = function(evt, index) {
+    $(".tag-children").each(function(i) {
+      if (index == i) $(this).toggle();
+      else $(this).hide();
+    });
   };
   // 初始化
   $("#editor").on("hidden.bs.modal", function() {
     $scope.edit_item = {};
   });
-  $http.post("/tag/fetch_tags").then(function(e) {
+  $http.post("/wallpaper/fetch_tags").then(function(e) {
     $scope.tags = e.data.data;
   });
   $http.post("/user/fetch_default").then(function(e) {
@@ -294,4 +310,31 @@ siteApp.controller("ThemeCtrl", ["$scope", "$http", function($scope, $http) {
     $scope.users = e.data.data;
   });
   $scope.fetch();
+}]);
+
+siteApp.controller("LoginCtrl", ["$scope", "$http", function($scope, $http) {
+  // 定义函数
+  $scope.input_all = function() {
+    return !$scope.uid || $scope.uid == "" || !$scope.pwd || $scope.pwd == "";
+  };
+  $scope.login = function(evt) {
+    $(evt.target).button("loading");
+    $http.post("/login_submit", {uid: $scope.uid, pwd: $scope.pwd}).then(function(e) {
+      $(evt.target).button("reset");
+      if (e.data.status == 0) {
+        location = "/";
+      } else {
+        alert(e.data.description);
+      }
+    });
+  };
+}]);
+
+siteApp.controller("LogoutCtrl", ["$scope", "$http", function($scope, $http) {
+  // 定义函数
+  $scope.logout = function(evt) {
+    $http.post("/logout").then(function(e) {
+      location = "/login";
+    });
+  };
 }]);

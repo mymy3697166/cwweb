@@ -1,5 +1,5 @@
 # coding: utf-8
-from flask import Blueprint, render_template, request, jsonify
+from flask import Blueprint, render_template, request, jsonify, redirect, session
 import leancloud, apis
 
 class Tag(leancloud.Object):
@@ -8,6 +8,8 @@ tag_apis = Blueprint('tag_apis', __name__)
 
 @tag_apis.route('/')
 def tag():
+  if not session.has_key('user') or session.has_key('user') == None:
+    return redirect('/login')
   return render_template('tag.jade')
 
 @tag_apis.route('/fetch', methods = ['POST'])
