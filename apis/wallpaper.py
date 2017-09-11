@@ -77,6 +77,8 @@ def update():
       wpt.set('wallpaper', wp)
       wpt.set('tag', t)
       wpt.save()
+      t.set('wallpaper_count', WallpaperTags.query.equal_to('tag', t).count())
+      t.save()
     wp.set('tags', tags)
   wp.save()
   return fetch()

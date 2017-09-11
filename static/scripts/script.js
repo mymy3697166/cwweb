@@ -1,4 +1,5 @@
 $(function() {
+
   $("#content").css("min-height", $("body").height() - 137);
 });
 
@@ -44,7 +45,6 @@ function upload(callback, start) {
 }
 
 var siteApp = angular.module("siteApp", []);
-
 
 siteApp.controller("TagCtrl", ["$scope", "$http", function($scope, $http) {
   // 定义数据
@@ -167,8 +167,7 @@ siteApp.controller("WallpaperCtrl", ["$scope", "$http", function($scope, $http) 
       $scope.edit_item.user &&
       $scope.edit_item.user.id &&
       $scope.edit_item.user.id != "" &&
-      $scope.edit_item.price &&
-      $scope.edit_item.price != ""
+      $scope.edit_item.price != undefined
   };
   $scope.tag_checked = function() {
 
